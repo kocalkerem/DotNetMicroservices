@@ -34,7 +34,7 @@ namespace Catalog.API
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                //app.UseExceptionHandler("/Error");
             }
 
             app.UseStaticFiles();
