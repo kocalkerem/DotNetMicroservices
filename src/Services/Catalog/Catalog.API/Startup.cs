@@ -1,3 +1,5 @@
+using Catalog.API.Data;
+using Catalog.API.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +24,12 @@ namespace Catalog.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+
+            services.AddControllers();
+            services.AddSwaggerGen(s => s.SwaggerDoc("v1",new Microsoft.OpenApi.Models.OpenApiInfo {  Title = "Catalog.API" , Version = "v1" }));
+
+            services.AddScoped<ICatalogContext, CatalogContext>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -31,13 +38,9 @@ namespace Catalog.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                //app.UseExceptionHandler("/Error");
-            }
-
-            app.UseStaticFiles();
+                app.UseSwagger();
+                app.UseSwaggerUI(s => s.SwaggerEndpoint("/swagger/v1/swagger.json","Catalog.API v1"));
+            } 
 
             app.UseRouting();
 
@@ -45,7 +48,7 @@ namespace Catalog.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
